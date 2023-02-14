@@ -7,11 +7,11 @@ pool.on("error", (err) => {
 });
 
 module.exports = {
-  getCategoriesCourse(req, res) {
+  getCourse(req, res) {
     pool.getConnection(function (err, connection) {
       if (err) throw err;
       connection.query(
-        `SELECT * FROM course_categories
+        `SELECT * FROM courses
                 `,
         function (error, results) {
           if (error) throw error;
@@ -26,13 +26,13 @@ module.exports = {
     });
   },
 
-  getCategoryCourseByID(req, res) {
+  getCourseByID(req, res) {
     const id = req.params.id;
     pool.getConnection(function (err, connection) {
       if (err) throw err;
       connection.query(
         `
-        SELECT * FROM course_categories WHERE id = ?;
+        SELECT * FROM courses WHERE id = ?;
         `,[id],
         function (error, results) {
           if (error) {
@@ -58,19 +58,20 @@ module.exports = {
 
   addCategoriesCourse(req, res) {
     const data = {
-      name: req.body.name,
+      title: req.body.title,
+      category: req.body.category,
     };
     pool.getConnection(function (err, connection) {
       if (err) throw err;
       connection.query(
-        `INSERT INTO course_categories SET ?;
+        `INSERT INTO courses SET ?;
                 `,
         [data],
         function (error, result) {
           if (error) throw error;
           res.send({
             success: true,
-            message: "Berhasil Menambahkan Data!",
+            message: "Berhasil menambahkan data!",
             data: result,
           });
         }
@@ -79,43 +80,44 @@ module.exports = {
     });
   },
 
-  editCategoryCourse(req,res){
+  editCourse(req,res){
       let dataEdit = {
-          name : req.body.name,
+          title : req.body.title,
+          category : req.body.category,
       }
       let id = req.body.id
       pool.getConnection(function(err, connection) {
           if (err) throw err;
           connection.query(
               `
-              UPDATE course_categories SET ? WHERE id = ?;
+              UPDATE courses SET ? WHERE id = ?;
               `
           , [dataEdit, id],
           function (error, results) {
               if(error) throw error;
               res.send({
                   success: true,
-                  message: 'Berhasil edit data!',
+                  message: 'Berhasil mengedit data!',
               });
           });
           connection.release();
       })
   },
-
-  deleteCategoryCourse(req,res){
+  
+  deleteCourse(req,res){
       let id = req.body.id
       pool.getConnection(function(err, connection) {
           if (err) throw err;
           connection.query(
               `
-              DELETE FROM course_categories WHERE id = ?;
+              DELETE FROM courses WHERE id = ?;
               `
           , [id],
           function (error, results) {
               if(error) throw error;
               res.send({
                   success: true,
-                  message: 'Berhasil hapus data!'
+                  message: 'Berhasil menghapus data!'
               });
           });
           connection.release();
