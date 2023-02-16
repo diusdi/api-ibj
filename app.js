@@ -1,15 +1,17 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const courseCategoryRoute = require("./src/routes/courseCategoryRoute");
-const courseRoute = require("./src/routes/courseRoute");
+const PORT = process.env.PORT || 5000;
+
+const courseCategoryRouter = require("./src/routes/courseCategoryRoute");
+const courseRouter = require("./src/routes/courseRoute");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use("/category", courseCategoryRoute);
-app.use("/course", courseRoute);
+app.use("/api/kelas/kategori", courseCategoryRouter);
+app.use("/api/kelas", courseRouter);
 
-app.listen(8080, () => {
-  console.log("Server Berjalan di Port : 8080");
+app.listen(PORT, () => {
+  console.log(`Server Berjalan di Port : ${PORT}`);
 });

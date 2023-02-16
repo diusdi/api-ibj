@@ -1,124 +1,35 @@
-const config = require("../configs/database");
-const mysql = require("mysql");
-const pool = mysql.createPool(config);
+const { insertData, getData, getDataById, updateData, deleteData } = require("../models/courseCategory");
 
-pool.on("error", (err) => {
-  console.error(err);
-});
+exports.getAllCourseCategory = (req, res, next) => {
+  const querySql = "SELECT * FROM course_categories ";
 
-module.exports = {
-  getCategoriesCourse(req, res) {
-    pool.getConnection(function (err, connection) {
-      if (err) throw err;
-      connection.query(
-        `SELECT * FROM course_categories
-                `,
-        function (error, results) {
-          if (error) throw error;
-          res.send({
-            success: true,
-            message: "Berhasil mengambil data",
-            data: results,
-          });
-        }
-      );
-      connection.release();
-    });
-  },
+  getData(res, querySql);
+};
 
-  getCategoryCourseByID(req, res) {
-    const id = req.params.id;
-    pool.getConnection(function (err, connection) {
-      if (err) throw err;
-      connection.query(
-        `
-        SELECT * FROM course_categories WHERE id = ?;
-        `,[id],
-        function (error, results) {
-          if (error) {
-            throw error;
-          }
-          else if (results.length !== 0) {
-            res.send({
-              success: true,
-              message: "Berhasil mengambil data",
-              data: results,
-            });
-          }
-          res.send({
-            success: false,
-            message: "Data tidak ditemukan",
-            data: [],
-          });
-        }
-      );
-      connection.release();
-    });
-  },
+exports.getCourseCategoryById = (req, res, next) => {
+  const querySearch = "SELECT * FROM course_categories WHERE id = ?";
 
-  addCategoriesCourse(req, res) {
-    const data = {
-      name: req.body.name,
-    };
-    pool.getConnection(function (err, connection) {
-      if (err) throw err;
-      connection.query(
-        `INSERT INTO course_categories SET ?;
-                `,
-        [data],
-        function (error, result) {
-          if (error) throw error;
-          res.send({
-            success: true,
-            message: "Berhasil Menambahkan Data!",
-            data: result,
-          });
-        }
-      );
-      connection.release();
-    });
-  },
+  getDataById(res, querySearch, req.params.id);
+};
 
-  editCategoryCourse(req,res){
-      let dataEdit = {
-          name : req.body.name,
-      }
-      let id = req.body.id
-      pool.getConnection(function(err, connection) {
-          if (err) throw err;
-          connection.query(
-              `
-              UPDATE course_categories SET ? WHERE id = ?;
-              `
-          , [dataEdit, id],
-          function (error, results) {
-              if(error) throw error;
-              res.send({
-                  success: true,
-                  message: 'Berhasil edit data!',
-              });
-          });
-          connection.release();
-      })
-  },
+exports.updateCourseCategory = (req, res, next) => {
+  const data = { ...req.body };
+  const querySearch = "SELECT * FROM course_categories WHERE id = ?";
+  const queryUpdate = "UPDATE course_categories SET ? WHERE id = ?";
 
-  deleteCategoryCourse(req,res){
-      let id = req.body.id
-      pool.getConnection(function(err, connection) {
-          if (err) throw err;
-          connection.query(
-              `
-              DELETE FROM course_categories WHERE id = ?;
-              `
-          , [id],
-          function (error, results) {
-              if(error) throw error;
-              res.send({
-                  success: true,
-                  message: 'Berhasil hapus data!'
-              });
-          });
-          connection.release();
-      })
-  }
+  updateData(res, querySearch, queryUpdate, req.params.id, data);
+};
+
+exports.createCourseCategory = (req, res, next) => {
+  const data = { ...req.body };
+  const querySql = "INSERT INTO course_categories SET ?";
+
+  insertData(res, querySql, data);
+};
+
+exports.deleteCourseCategory = (req, res) => {
+  const querySearch = 'SELECT * FROM course_categories WHERE id = ?';
+  const queryDelete = 'DELETE FROM course_categories WHERE id = ?';
+
+  deleteData(res, querySearch, queryDelete, req.params.id);
 };
