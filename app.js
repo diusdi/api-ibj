@@ -3,14 +3,16 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const courseCategoryRouter = require("./src/routes/courseCategoryRoute");
+const userRouter = require("./src/routes/userRoute");
 const courseRouter = require("./src/routes/courseRoute");
+const courseCategoryRouter = require("./src/routes/courseCategoryRoute");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use("/api/kelas/kategori", courseCategoryRouter);
+app.use("/api/user", userRouter);
 app.use("/api/kelas", courseRouter);
+app.use("/api/kelas/kategori", courseCategoryRouter);
 
 app.listen(PORT, () => {
   console.log(`Server Berjalan di Port : ${PORT}`);
