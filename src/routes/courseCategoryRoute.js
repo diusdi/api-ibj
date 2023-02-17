@@ -5,6 +5,7 @@ const router = express.Router();
 router.get("/", getAllCourseCategory);
 router.get("/:id", getCourseCategoryById);
 router.put("/:id", updateCourseCategory);
+router.post("/", createCourseCategory);
 router.delete("/:id", deleteCourseCategory);
 
 module.exports = router;
