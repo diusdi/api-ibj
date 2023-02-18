@@ -2,9 +2,7 @@ const { register, prosesLogin } = require("../models/auth");
 
 exports.login = (req, res, next) => {
   const data = { ...req.body };
-  const querySearch = "SELECT email, password FROM admin WHERE email = ? and password = ?;";
-//   const queryInsert = "INSERT INTO admin SET ?;";
-
+  const querySearch = "SELECT * FROM admin WHERE email = ?;";
   prosesLogin(res, querySearch, data);
 };
 
