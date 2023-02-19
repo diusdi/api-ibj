@@ -58,7 +58,6 @@ const createAksesToken = (data, response) => {
       responseData(response, 201, data);
     }
 
-    responseMessage(response, 404, "Gagal menambahkan data");
   });
 };
 
@@ -70,7 +69,7 @@ const checkPassword = (dataInput, dataDb, response) => {
 
     if (result) {
       let token = jwt.sign({ result }, config.secret, {
-        expiresIn: "1d",
+        expiresIn: "30m",
       });
 
       const data = {
