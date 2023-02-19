@@ -40,9 +40,9 @@ const createAdmin = (response, statement, data) => {
 
   koneksi.query(statement, data, (err, rows, field) => {
     if (err) {
-      return response.status(500).json({ message: "Gagal menambahkan data", error: err });
+      return response.status(500).json({ message: "Gagal registrasi", error: err });
     }
-    responseMessage(response, 201, "Berhasil menambahkan data!");
+    responseMessage(response, 201, "Berhasil registrasi akun");
   });
 };
 
@@ -57,7 +57,6 @@ const createAksesToken = (data, response) => {
     if (rows) {
       responseData(response, 201, data);
     }
-
   });
 };
 
@@ -69,7 +68,7 @@ const checkPassword = (dataInput, dataDb, response) => {
 
     if (result) {
       let token = jwt.sign({ result }, config.secret, {
-        expiresIn: "30m",
+        expiresIn: 60*30,
       });
 
       const data = {
