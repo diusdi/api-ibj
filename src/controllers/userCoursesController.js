@@ -1,4 +1,4 @@
-const { insertData, getData, getDataById, updateData, deleteData } = require("../models/course");
+const { insertData, getData, getDataById, updateData, deleteData } = require("../models/userCourse");
 
 exports.getAllUserCourse = (req, res, next) => {
   const querySql = "SELECT user_courses.id, users.name, courses.title FROM users INNER JOIN user_courses ON users.id = user_courses.user_id INNER JOIN courses ON user_courses.course_id = courses.id; ";

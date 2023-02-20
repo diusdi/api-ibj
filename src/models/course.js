@@ -44,7 +44,7 @@ exports.updateData = (response, searchStatement, updateStatement, id, data) => {
   });
 };
 
-exports.insertData = (response, insertStatement, data) => {
+exports.insertData = (response, searchStatement, insertStatement, data) => {
     koneksi.query(insertStatement, data, (err, rows, field) => {
       if (err) {
         return response.status(500).json({ message: "Ada kesalahan", error: err });
