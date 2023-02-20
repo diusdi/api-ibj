@@ -20,5 +20,5 @@ app.use("/api/kelas", courseRouter);
 app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server Berjalan di Port : ${PORT}`);
+  console.log(`Server Berjalan di Port : http://localhost:${PORT} \n`);
 });
