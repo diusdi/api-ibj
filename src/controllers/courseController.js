@@ -1,4 +1,6 @@
 const { insertData, getData, getDataById, updateData, deleteData } = require("../models/course");
+const { validationResult } = require("express-validator");
+const { responseData, responseMessage } = require("../utils/responseHandler");
 
 exports.getAllCourses = (req, res, next) => {
   const querySql = "SELECT * FROM courses ";
@@ -16,17 +18,26 @@ exports.updateCourse = (req, res, next) => {
   const data = { ...req.body };
   const querySearch = "SELECT * FROM courses WHERE id = ?";
   const queryUpdate = "UPDATE courses SET ? WHERE id = ?";
+  const errors = validationResult(req);
 
-  updateData(res, querySearch, queryUpdate, req.params.id, data);
+  if (!errors.isEmpty()) {
+    responseMessage(res, 400, errors);
+  }else{
+    updateData(res, querySearch, queryUpdate, req.params.id, data);
+  }
 };
 
 exports.createCourse = (req, res, next) => {
   const data = { ...req.body };
   const querySearch = "SELECT * FROM course_categories WHERE id = ?";
   const querySql = "INSERT INTO courses SET ?";
+  const errors = validationResult(req);
 
-  // console.log(data.category);
-  insertData(res, querySearch, querySql, data);
+  if (!errors.isEmpty()) {
+    responseMessage(res, 400, errors);
+  }else{
+    insertData(res, querySearch, querySql, data);
+  }
 };
 
 exports.deleteCourse = (req, res) => {
