@@ -1,4 +1,6 @@
 const { insertData, getData, getDataById, updateData, deleteData } = require("../models/user");
+const { validationResult } = require("express-validator");
+const { responseData, responseMessage } = require("../utils/responseHandler");
 
 exports.getAllUser = (req, res, next) => {
   const querySql = "SELECT id, name, email  FROM users ";
@@ -16,15 +18,25 @@ exports.updateUser = (req, res, next) => {
   const data = { ...req.body };
   const querySearch = "SELECT * FROM users WHERE id = ?";
   const queryUpdate = "UPDATE users SET ? WHERE id = ?";
+  const errors = validationResult(req);
 
-  updateData(res, querySearch, queryUpdate, req.params.id, data);
+  if (!errors.isEmpty()) {
+    responseMessage(res, 400, errors);
+  }else{
+    updateData(res, querySearch, queryUpdate, req.params.id, data);
+  }
 };
 
 exports.createUser = (req, res, next) => {
   const data = { ...req.body };
   const querySql = "INSERT INTO users SET ?";
+  const errors = validationResult(req);
 
-  insertData(res, querySql, data);
+  if (!errors.isEmpty()) {
+    responseMessage(res, 400, errors);
+  }else{
+    insertData(res, querySql, data);
+  }
 };
 
 exports.deleteUser = (req, res) => {
