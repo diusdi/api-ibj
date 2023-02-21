@@ -45,13 +45,7 @@ exports.updateData = (response, searchStatement, updateStatement, id, data) => {
 };
 
 exports.insertData = (response, searchStatement, insertStatement, data) => {
-    koneksi.query(insertStatement, data, (err, rows, field) => {
-      if (err) {
-        return response.status(500).json({ message: "Ada kesalahan", error: err });
-      }
-
-      responseMessage(response, 200, "Berhasil menambahkan data!");
-    });
+  findCourseCategory(response, searchStatement, data.course_category_id, createCourse(response, insertStatement, data));
 };
 
 exports.deleteData = (response, searchStatement, deleteStatement, id) => {
@@ -71,5 +65,28 @@ exports.deleteData = (response, searchStatement, deleteStatement, id) => {
     } else {
       return response.status(404).json({ success: false, message: "Data tidak ditemukan!" });
     }
+  });
+};
+
+const findCourseCategory = (response, searchStatement, course_category_id, next) => {
+  koneksi.query(searchStatement, course_category_id, (err, rows, field) => {
+    if (err) {
+      return response.status(500).json({ message: "Ada kesalahan", error: err });
+    }
+    if (rows.length) {
+      responseMessage(response, 404, "Kategori kelas tidak ada");
+    } else {
+      next();
+    }
+  });
+};
+
+const createCourse = (response, insertStatement, data) => {
+  koneksi.query(insertStatement, data, (err, rows, field) => {
+    if (err) {
+      return response.status(500).json({ message: "Ada kesalahan", error: err });
+    }
+
+    responseMessage(response, 200, "Berhasil menambahkan data!");
   });
 };
