@@ -8,10 +8,8 @@ exports.getAllCourses = (req, res, next) => {
   getData(res, querySql);
 };
 
-exports.getCourseById = (req, res, next) => {
-  const querySearch = "SELECT * FROM courses WHERE id = ?";
-
-  getDataById(res, querySearch, req.params.id);
+exports.getCourseById = (req, res) => {
+  getDataById(res, req.params.id);
 };
 
 exports.updateCourse = (req, res, next) => {

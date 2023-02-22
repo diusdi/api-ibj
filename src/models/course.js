@@ -10,22 +10,12 @@ exports.getData = (response, statement) => {
   });
 };
 
-exports.getDataById = (response, searchStatement, id) => {
-  koneksi.query(searchStatement, [id], (err, rows, field) => {
-    if (err) {
-      return responseMessage(response, 500, ["Gagal menampilkan data", { error: err }]);
-    }
-
-    if (rows.length) {
-      return responseData(response, 200, rows);
-    } else {
-      return responseMessage(response, 404, "Data tidak ditemukan");
-    }
-  });
+exports.getDataById = (response, id) => {
+  findCourse(response,null, null, id, 'SEARCH' )
 };
 
 exports.updateData = (response, id, data) => {
-  findCourse(response, data.course_category_id, data, id);
+  findCourse(response, data.course_category_id, data, id, 'UPDATE');
 };
 
 exports.insertData = (response, data) => {
@@ -73,7 +63,7 @@ const findCourseCategory = (response, course_category_id, data, action, id = nul
   });
 };
 
-const findCourse = (response, course_category_id, data, id) => {
+const findCourse = (response, course_category_id, data, id, action) => {
   const searchStatement = "SELECT * FROM courses WHERE id = ?";
   koneksi.query(searchStatement, id, (err, rows, field) => {
     if (err) {
@@ -81,7 +71,14 @@ const findCourse = (response, course_category_id, data, id) => {
     }
 
     if (rows.length) {
-      findCourseCategory(response, course_category_id, data, "UPDATE", id);
+      switch (action) {
+        case 'SEARCH':
+          responseData(response, 200, rows)
+          break;
+        case 'UPDATE':
+          findCourseCategory(response, course_category_id, data, "UPDATE", id);
+          break;
+      }
     } else {
       return responseMessage(response, 404, "Kelas tidak ditemukan");
     }
