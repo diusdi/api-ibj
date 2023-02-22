@@ -35,8 +35,5 @@ exports.createCourse = (req, res, next) => {
 };
 
 exports.deleteCourse = (req, res) => {
-  const querySearch = "SELECT * FROM courses WHERE id = ?";
-  const queryDelete = "DELETE FROM courses WHERE id = ?";
-
-  deleteData(res, querySearch, queryDelete, req.params.id);
+  deleteData(res, req.params.id);
 };
