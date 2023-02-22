@@ -4,71 +4,71 @@ const { responseData, responseMessage } = require("../utils/responseHandler");
 exports.getData = (response, statement) => {
   koneksi.query(statement, (err, rows) => {
     if (err) {
-      return response.status(500).json({ message: "Gagal menampilkan data", error: err });
+      return responseMessage(response, 500, ["Ada kesalahan", { error: err }]);
     }
-    responseData(response, 200, rows);
+    return responseData(response, 200, rows);
   });
 };
 
 exports.getDataById = (response, searchStatement, id) => {
   koneksi.query(searchStatement, [id], (err, rows, field) => {
     if (err) {
-      return response.status(500).json({ message: "Ada kesalahan", error: err });
+      return responseMessage(response, 500, ["Ada kesalahan", { error: err }]);
     }
 
     if (rows.length) {
-      responseData(response, 200, rows);
+      return responseData(response, 200, rows);
     } else {
-      return response.status(404).json({ message: "Kategori tidak ditemukan!", success: false });
+      return responseMessage(response, 500, "Kategori tidak ditemukan");
     }
   });
 };
 
 exports.updateData = (response, searchStatement, updateStatement, id, data) => {
   koneksi.query(searchStatement, id, (err, rows, field) => {
-      if (err) {
-          return response.status(500).json({ message: 'Ada kesalahan', error: err });
-      }
+    if (err) {
+      return responseMessage(response, 500, ["Ada kesalahan", { error: err }]);
+    }
 
-      if (rows.length) {
-          koneksi.query(updateStatement, [data, id], (err, rows, field) => {
-              if (err) {
-                  return response.status(500).json({ message: 'Ada kesalahan', error: err });
-              }
+    if (rows.length) {
+      koneksi.query(updateStatement, [data, id], (err, rows, field) => {
+        if (err) {
+          return responseMessage(response, 500, ["Gagal update data", { error: err }]);
+        }
 
-              responseMessage(response, 200, 'Berhasil update data!');
-          });
-      } else {
-          return response.status(404).json({ message: 'Kategori tidak ditemukan!', success: false });
-      }
+        return responseMessage(response, 200, "Berhasil update data!");
+      });
+    } else {
+      return responseMessage(response, 404, "Kategori tidak ditemukan!");
+    }
   });
 };
 
 exports.insertData = (response, statement, data) => {
   koneksi.query(statement, data, (err, rows, field) => {
     if (err) {
-      return response.status(500).json({ message: "Gagal menambahkan data", error: err });
+      return responseMessage(response, 500, ["Gagal menambahkan data", { error: err }]);
     }
-    responseMessage(response, 201, "Berhasil menambahkan data!");
+    return responseMessage(response, 201, "Berhasil menambahkan data!");
   });
 };
 
 exports.deleteData = (response, searchStatement, deleteStatement, id) => {
   koneksi.query(searchStatement, id, (err, rows, field) => {
-      if (err) {
-          return response.status(500).json({ message: 'Ada kesalahan', error: err });
-      }
+    if (err) {
+      return responseMessage(response, 500, ["Ada kesalahan", { error: err }]);
+    }
 
-      if (rows.length) {
-          koneksi.query(deleteStatement, id, (err, rows, field) => {
-              if (err) {
-                  return response.status(500).json({ message: 'Ada kesalahan', error: err });
-              }
+    if (rows.length) {
+      koneksi.query(deleteStatement, id, (err, rows, field) => {
+        if (err) {
+          return responseMessage(response, 500, ["Ada kesalahan", { error: err }]);
+        }
 
-              responseMessage(response, 200, 'Berhasil hapus data!');
-          });
-      } else {
-          return response.status(404).json({ success: false, message: 'Kategori tidak ditemukan!' });
-      }
+        return responseMessage(response, 200, "Berhasil hapus data!");
+      });
+    } else {
+      return responseMessage(response, 404, "Kategori tidak ditemukan");
+    }
   });
 };
