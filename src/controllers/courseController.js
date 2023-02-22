@@ -16,27 +16,25 @@ exports.getCourseById = (req, res, next) => {
 
 exports.updateCourse = (req, res, next) => {
   const data = { ...req.body };
-  const querySearch = "SELECT * FROM courses WHERE id = ?";
-  const queryUpdate = "UPDATE courses SET ? WHERE id = ?";
+  // const querySearch = "SELECT * FROM courses WHERE id = ?";
+  // const queryUpdate = "UPDATE courses SET ? WHERE id = ?";
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     responseMessage(res, 400, errors);
   }else{
-    updateData(res, querySearch, queryUpdate, req.params.id, data);
+    updateData(res, req.params.id, data);
   }
 };
 
 exports.createCourse = (req, res, next) => {
   const data = { ...req.body };
-  const querySearch = "SELECT * FROM course_categories WHERE id = ?";
-  const querySql = "INSERT INTO courses SET ?";
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     responseMessage(res, 400, errors);
   }else{
-    insertData(res, querySearch, querySql, data);
+    insertData(res, data);
   }
 };
 
