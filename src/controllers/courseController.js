@@ -16,13 +16,11 @@ exports.getCourseById = (req, res, next) => {
 
 exports.updateCourse = (req, res, next) => {
   const data = { ...req.body };
-  // const querySearch = "SELECT * FROM courses WHERE id = ?";
-  // const queryUpdate = "UPDATE courses SET ? WHERE id = ?";
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     responseMessage(res, 400, errors);
-  }else{
+  } else {
     updateData(res, req.params.id, data);
   }
 };
@@ -33,14 +31,14 @@ exports.createCourse = (req, res, next) => {
 
   if (!errors.isEmpty()) {
     responseMessage(res, 400, errors);
-  }else{
+  } else {
     insertData(res, data);
   }
 };
 
 exports.deleteCourse = (req, res) => {
-  const querySearch = 'SELECT * FROM courses WHERE id = ?';
-  const queryDelete = 'DELETE FROM courses WHERE id = ?';
+  const querySearch = "SELECT * FROM courses WHERE id = ?";
+  const queryDelete = "DELETE FROM courses WHERE id = ?";
 
   deleteData(res, querySearch, queryDelete, req.params.id);
 };

@@ -4,28 +4,28 @@ const { responseData, responseMessage } = require("../utils/responseHandler");
 exports.getData = (response, statement) => {
   koneksi.query(statement, (err, rows) => {
     if (err) {
-      return response.status(500).json({ message: "Gagal menampilkan data", error: err });
+      return responseMessage(response, 500, ["Gagal menampilkan data", { error: err }]);
     }
-    responseData(response, 200, rows);
+    return responseData(response, 200, rows);
   });
 };
 
 exports.getDataById = (response, searchStatement, id) => {
   koneksi.query(searchStatement, [id], (err, rows, field) => {
     if (err) {
-      return response.status(500).json({ message: "Ada kesalahan", error: err });
+      return responseMessage(response, 500, ["Gagal menampilkan data", { error: err }]);
     }
 
     if (rows.length) {
-      responseData(response, 200, rows);
+      return responseData(response, 200, rows);
     } else {
-      return response.status(404).json({ message: "Data tidak ditemukan!", success: false });
+      return responseMessage(response, 404, "Data tidak ditemukan");
     }
   });
 };
 
 exports.updateData = (response, id, data) => {
-  findCourse(response, data.course_category_id, data, id)
+  findCourse(response, data.course_category_id, data, id);
 };
 
 exports.insertData = (response, data) => {
@@ -52,7 +52,7 @@ exports.deleteData = (response, searchStatement, deleteStatement, id) => {
   });
 };
 
-const findCourseCategory = (response, course_category_id, data, action, id=null) => {
+const findCourseCategory = (response, course_category_id, data, action, id = null) => {
   const findStat = "SELECT * FROM course_categories WHERE id = ?";
   koneksi.query(findStat, course_category_id, (err, rows, field) => {
     if (err) {
@@ -64,7 +64,7 @@ const findCourseCategory = (response, course_category_id, data, action, id=null)
           createCourse(response, data);
           break;
         case "UPDATE":
-          updateCourse(response,id,  data);
+          updateCourse(response, id, data);
           break;
       }
     } else {
@@ -77,13 +77,13 @@ const findCourse = (response, course_category_id, data, id) => {
   const searchStatement = "SELECT * FROM courses WHERE id = ?";
   koneksi.query(searchStatement, id, (err, rows, field) => {
     if (err) {
-      return response.status(500).json({ message: "Ada kesalahan", error: err });
+      return responseMessage(response, 500, ["Ada kesalahan", { error: err }]);
     }
 
     if (rows.length) {
-      findCourseCategory(response, course_category_id, data, "UPDATE", id)
+      findCourseCategory(response, course_category_id, data, "UPDATE", id);
     } else {
-      return responseMessage(response, 404, 'Kelas tidak ditemukan');
+      return responseMessage(response, 404, "Kelas tidak ditemukan");
     }
   });
 };
@@ -92,7 +92,7 @@ const createCourse = (response, data) => {
   const insertStatement = "INSERT INTO courses SET ?";
   koneksi.query(insertStatement, data, (err, rows, field) => {
     if (err) {
-      return response.status(500).json({ message: "Ada kesalahan", error: err });
+      return responseMessage(response, 500, ["Ada kesalahan", {error : err}])
     }
 
     return responseMessage(response, 200, "Berhasil menambahkan data!");
@@ -103,7 +103,7 @@ const updateCourse = (response, id, data) => {
   const updateStatement = "UPDATE courses SET ? WHERE id = ?";
   koneksi.query(updateStatement, [data, id], (err, rows, field) => {
     if (err) {
-      return response.status(500).json({ message: "Ada kesalahan", error: err });
+      return responseMessage(response, 500, ["Ada kesalahan", {error : err}])
     }
 
     return responseMessage(response, 200, "Berhasil update data!");
